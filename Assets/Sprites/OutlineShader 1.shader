@@ -42,7 +42,6 @@ Shader "Custom/OutlineShader"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-
                 o.uv = v.uv;
                 return o;
             }
@@ -52,12 +51,12 @@ Shader "Custom/OutlineShader"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float alpha = col.a;
 
-                float alphaOutline = tex2D(_MainTex, i.uv + float2(_OutlineWidth, 0)).a;
-                alphaOutline = max(alphaOutline, tex2D(_MainTex, i.uv + float2(-_OutlineWidth, 0)).a);
-                alphaOutline = max(alphaOutline, tex2D(_MainTex, i.uv + float2(0, _OutlineWidth)).a);
-                alphaOutline = max(alphaOutline, tex2D(_MainTex, i.uv + float2(0, -_OutlineWidth)).a);
+                float alphaOutline = tex2D(_MainTex, i.uv + float2(_OutlineWidth, 0) * _MainTex_TexelSize.xy).a;
+                alphaOutline = max(alphaOutline, tex2D(_MainTex, i.uv + float2(-_OutlineWidth, 0) * _MainTex_TexelSize.xy).a);
+                alphaOutline = max(alphaOutline, tex2D(_MainTex, i.uv + float2(0, _OutlineWidth) * _MainTex_TexelSize.xy).a);
+                alphaOutline = max(alphaOutline, tex2D(_MainTex, i.uv + float2(0, -_OutlineWidth) * _MainTex_TexelSize.xy).a);
 
-                if (alphaOutline < 1 && alpha == 1)
+                if (alphaOutline > 0 && alpha < 1)
                 {
                     return _OutlineColor;
                 }
